@@ -10,6 +10,7 @@
 .global MacroLocals
 .global MacroLevel
 
+.extern GetResWName
 .extern _flttostr
 .extern LstWriteSrcLine
 .extern SetIfNestLevel
@@ -2007,7 +2008,7 @@ $_248:	mov	rax, -2
 $_249:	jmp	$_260
 
 $_250:	cmp	byte ptr [rsi+0x18], 10
-	jne	$_260
+	jne	$$260
 	cmp	byte ptr [rbx-0x18], 46
 	jnz	$_257
 	mov	ecx, dword ptr [rbp-0xC]
@@ -2080,8 +2081,54 @@ $_258:	mov	rcx, qword ptr [rbx+0x8]
 	cmp	eax, -1
 	jnz	$_259
 	jmp	$_267
-
 $_259:	mov	dword ptr [rbp-0x8C], 1
+	jmp	$_260
+
+$$260:	cmp	byte ptr [rsi+0x18], 5
+	jne	$_260
+	cmp	dword ptr [rbp-0x0C], 2
+	jle	$_260
+	cmp	byte ptr [rbx-0x18], 40
+	jne	$_260
+	cmp	dword ptr [rbx-0x2C], 451
+	jne	$_260
+	test	byte ptr [rsi+0x17], 1
+	jz	$$261
+	movzx	ecx, byte ptr [rsi+0x48]
+	mov	rdx, qword ptr [rbp+0x58]
+	call	GetResWName@PLT
+	jmp	$$262
+$$261:	mov	rdx, qword ptr [rbx+0x8]
+	mov	rcx, qword ptr [rbp+0x58]
+	call	tstrcpy@PLT
+$$262:	sub	rbx, 48
+	sub	dword ptr [rbp-0x0C], 2
+	mov	rcx, qword ptr [rbx+0x70]
+	mov	rdx, rcx
+	sub	rdx, qword ptr [rbx+0x10]
+	sub	rcx, qword ptr [rbp+0x28]
+	mov	eax, dword ptr [rbp-0x14]
+	mov	dword ptr [rsp+0x28], eax
+	mov	dword ptr [rsp+0x20], ecx
+	mov	r9d, edx
+	mov	r8, qword ptr [rbp+0x38]
+	mov	edx, dword ptr [rbp-0x0C]
+	mov	rcx, qword ptr [rbp+0x58]
+	call	$_213
+	cmp	eax, -1
+	jnz	$$263
+	jmp	$_267
+
+$$263:	mov	dword ptr [rbp-0x8C], 1
+	mov	r9d, 1
+	mov	r8, qword ptr [rbp+0x38]
+	xor	edx, edx
+	mov	rcx, qword ptr [rbp+0x28]
+	call	Tokenize@PLT
+	mov	dword ptr [ModuleInfo+0x220+rip], eax
+	mov	dword ptr [rbp+0x40], eax
+
+
 $_260:	inc	dword ptr [rbp-0xC]
 	jmp	$_231
 

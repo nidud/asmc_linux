@@ -5008,7 +5008,7 @@ $_736:	cmp	dword ptr [rbx+0x4], 272
 	jmp	$_744
 
 $_737:	cmp	dword ptr [rbx+0x4], 539
-	jnz	$_739
+	jnz	$_745
 	mov	byte ptr [rbx], 6
 	mov	dl, byte ptr [ModuleInfo+0x1B5+rip]
 	mov	eax, 1
@@ -5022,36 +5022,6 @@ $_737:	cmp	dword ptr [rbx+0x4], 539
 $_738:	mov	dword ptr [rbx+0x4], eax
 	jmp	$_744
 
-$_739:	cmp	dword ptr [rbx+0x4], 451
-	jnz	$_742
-	cmp	byte ptr [rbx+0x18], 40
-	jnz	$_742
-	mov	rcx, qword ptr [rbx+0x38]
-	call	SymFind@PLT
-	test	rax, rax
-	jz	$_742
-	cmp	byte ptr [rax+0x18], 5
-	jnz	$_742
-	test	byte ptr [rax+0x17], 0x01
-	jz	$_740
-	movzx	ecx, byte ptr [rax+0x48]
-	mov	dword ptr [rbx+0x4], ecx
-	mov	byte ptr [rbx], 2
-	movzx	r9d, byte ptr [rbp+0x40]
-	mov	r8, qword ptr [rbp+0x28]
-	mov	rdx, qword ptr [rbp+0x20]
-	mov	rcx, qword ptr [rbp+0x38]
-	call	$_205
-	mov	rdx, qword ptr [rbp+0x20]
-	add	dword ptr [rdx], 3
-	jmp	$_741
-
-$_740:	mov	rdx, qword ptr [rbp+0x20]
-	inc	dword ptr [rdx]
-$_741:	jmp	$_744
-
-$_742:	jmp	$_745
-
 $_743:	cmp	eax, 1
 	je	$_728
 	cmp	eax, 7
@@ -5059,13 +5029,12 @@ $_743:	cmp	eax, 1
 	cmp	eax, 3
 	je	$_737
 	cmp	eax, 44
-	jz	$_742
+	jz	$_745
 $_744:	inc	esi
 	add	rbx, 24
 	jmp	$_727
 
-$_745:
-	mov	rdx, qword ptr [rbp+0x20]
+$_745:	mov	rdx, qword ptr [rbp+0x20]
 	cmp	esi, dword ptr [rdx]
 	jnz	$_746
 	xor	eax, eax

@@ -2622,40 +2622,7 @@ $_356:	cmp	al, 44
 	add	rbx, 24
 	jmp	$_365
 
-	jmp	$_364
-
-$_357:	cmp	al, 3
-	jnz	$_363
-	cmp	dword ptr [rbx+0x4], 451
-	jnz	$_363
-	add	rbx, 48
-	mov	rcx, qword ptr [rbx+0x8]
-	call	SymFind@PLT
-	test	rax, rax
-	jz	$_362
-	cmp	byte ptr [rax+0x18], 5
-	jnz	$_362
-	test	byte ptr [rax+0x17], 0x01
-	jz	$_360
-	movzx	ecx, byte ptr [rax+0x48]
-	xor	edx, edx
-	call	GetResWName@PLT
-	mov	rsi, rax
-	xor	ecx, ecx
-$_358:	cmp	byte ptr [rsi+rcx], 0
-	jz	$_359
-	inc	ecx
-	jmp	$_358
-
-$_359:	jmp	$_361
-
-$_360:	mov	rsi, qword ptr [rax+0x8]
-	mov	ecx, dword ptr [rax+0x10]
-$_361:	add	rbx, 24
-	add	dword ptr [rbp-0xA24], 3
-$_362:	jmp	$_364
-
-$_363:	mov	rsi, qword ptr [rbx+0x10]
+$_357:	mov	rsi, qword ptr [rbx+0x10]
 	mov	rcx, qword ptr [rbx+0x28]
 	sub	rcx, rsi
 $_364:	rep movsb
