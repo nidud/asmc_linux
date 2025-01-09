@@ -351,7 +351,7 @@ $_027:	xor	eax, eax
 	pop	rsi
 	ret
 
-$_028:
+WriteModule:
 	push	rsi
 	push	rdi
 	push	rbx
@@ -360,7 +360,6 @@ $_028:
 	sub	rsp, 72
 	mov	rbx, qword ptr [SymTables+0x20+rip]
 	jmp	$_031
-
 $_029:	mov	rax, qword ptr [rbx+0x68]
 	cmp	byte ptr [rax+0x68], 0
 	jnz	$_030
@@ -435,7 +434,7 @@ $_037:	xor	eax, eax
 	pop	rsi
 	ret
 
-$_038:
+add_cmdline_tmacros:
 	push	rsi
 	push	rdi
 	push	rbx
@@ -528,7 +527,7 @@ $_050:	leave
 	pop	rsi
 	ret
 
-$_051:
+add_incpaths:
 	push	rsi
 	sub	rsp, 32
 	mov	rsi, qword ptr [Options+0x68+rip]
@@ -543,15 +542,14 @@ $_053:	test	rsi, rsi
 	pop	rsi
 	ret
 
-$_054:
-	mov	qword ptr [rsp+0x8], rcx
+CmdlParamsInit:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 32
-	cmp	dword ptr [rbp+0x10], 0
+	test	ecx,ecx
 	jnz	$_055
-	call	$_038
-	call	$_051
+	call	add_cmdline_tmacros
+	call	add_incpaths
 	cmp	byte ptr [Options+0xC7+rip], 0
 	jnz	$_055
 	lea	rcx, [DS0002+rip]
@@ -614,7 +612,7 @@ SetMasm510:
 	mov	byte ptr [rcx+0x1D2], 0
 $_062:	ret
 
-$_063:
+ModulePassInit:
 	push	rsi
 	push	rdi
 	push	rbx
@@ -742,7 +740,7 @@ $_073:	add	rsp, 32
 	pop	rsi
 	ret
 
-$_074:
+PassOneChecks:
 	push	rsi
 	push	rdi
 	sub	rsp, 40
@@ -882,12 +880,12 @@ $_105:	add	rsp, 40
 	pop	rsi
 	ret
 
-$_106:
+OnePass:
 	push	rsi
 	push	rdi
 	sub	rsp, 40
 	call	InputPassInit@PLT
-	call	$_063
+	call	ModulePassInit
 	mov	ecx, dword ptr [Parse_Pass+rip]
 	call	SymPassInit@PLT
 	call	LabelInit@PLT
@@ -906,7 +904,7 @@ $_106:
 	mov	ecx, dword ptr [Parse_Pass+rip]
 	call	AssumeInit@PLT
 	mov	ecx, dword ptr [Parse_Pass+rip]
-	call	$_054
+	call	CmdlParamsInit
 	xor	eax, eax
 	mov	byte ptr [ModuleInfo+0x1E0+rip], al
 	mov	byte ptr [ModuleInfo+0x1ED+rip], al
@@ -968,7 +966,7 @@ $_114:	test	rsi, rsi
 $_115:	call	LinnumFini@PLT
 	cmp	dword ptr [Parse_Pass+rip], 0
 	jnz	$_116
-	call	$_074
+	call	PassOneChecks
 $_116:	call	ClearSrcStack@PLT
 	mov	eax, 1
 	add	rsp, 40
@@ -976,7 +974,7 @@ $_116:	call	ClearSrcStack@PLT
 	pop	rsi
 	ret
 
-$_117:
+get_module_name:
 	push	rsi
 	push	rdi
 	sub	rsp, 40
@@ -1017,9 +1015,7 @@ $_121:	lodsb
 	jnz	$_121
 	mov	byte ptr [rsi-0x1], 95
 	jmp	$_121
-
-$_122:
-	cmp	byte ptr [ModuleInfo+0x230+rip], 57
+$_122:	cmp	byte ptr [ModuleInfo+0x230+rip], 57
 	ja	$_123
 	cmp	byte ptr [ModuleInfo+0x230+rip], 48
 	jc	$_123
@@ -1029,7 +1025,7 @@ $_123:	add	rsp, 40
 	pop	rsi
 	ret
 
-$_124:
+ModuleInit:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 16
@@ -1057,7 +1053,7 @@ $_125:	mov	byte ptr [ModuleInfo+0x1EE+rip], al
 	cmp	dword ptr [Options+0x4+rip], 1
 	jnz	$_126
 	inc	byte ptr [ModuleInfo+0x1D9+rip]
-$_126:	call	$_117
+$_126:	call	get_module_name
 	mov	rdx, rdi
 	lea	rdi, [SymTables+rip]
 	mov	ecx, 96
@@ -1069,7 +1065,7 @@ $_126:	call	$_117
 	leave
 	ret
 
-$_127:
+ReswTableInit:
 	sub	rsp, 40
 	call	ResWordsInit@PLT
 	cmp	dword ptr [Options+0xA4+rip], 1
@@ -1105,7 +1101,7 @@ $_128:	cmp	byte ptr [Options+0xC6+rip], 0
 $_129:	add	rsp, 40
 	ret
 
-$_130:
+open_files:
 	push	rsi
 	push	rdi
 	sub	rsp, 40
@@ -1145,7 +1141,7 @@ $_135:	add	rsp, 40
 	pop	rsi
 	ret
 
-$_136:
+iddc_file:
 	mov	qword ptr [rsp+0x8], rcx
 	push	rsi
 	push	rdi
@@ -1153,7 +1149,6 @@ $_136:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 344
-	mov	rcx, qword ptr [rbp+0x28]
 	call	GetFNamePart@PLT
 	mov	rdx, rax
 	lea	rcx, [rbp-0x104]
@@ -1269,11 +1264,10 @@ $_148:	add	rsp, 40
 	pop	rsi
 	ret
 
-$_149:
+GetExt:
 	lea	rax, [currentftype+rip]
 	mov	edx, 1836278062
 	jmp	$_157
-
 $_150:	mov	edx, 1784835886
 	cmp	dword ptr [Options+0xA4+rip], 0
 	jnz	$_153
@@ -1289,18 +1283,14 @@ $_151:	mov	edx, 1702389038
 	jz	$_152
 	mov	edx, 1819042862
 $_152:	jmp	$_154
-
 $_153:	cmp	dword ptr [Options+0xA4+rip], 3
 	jnz	$_154
 	and	edx, 0xFFFF
 $_154:	jmp	$_158
-
 $_155:	mov	edx, 1953721390
 	jmp	$_158
-
 $_156:	mov	edx, 1920099630
 	jmp	$_158
-
 $_157:	cmp	ecx, 1
 	jz	$_150
 	cmp	ecx, 2
@@ -1310,15 +1300,13 @@ $_157:	cmp	ecx, 1
 $_158:	mov	dword ptr [rax], edx
 	ret
 
-$_159:
-	mov	qword ptr [rsp+0x8], rcx
+SetFilenames:
 	push	rsi
 	push	rdi
 	push	rbx
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 296
-	mov	rcx, qword ptr [rbp+0x28]
 	call	LclDup@PLT
 	mov	qword ptr [ModuleInfo+0x90+rip], rax
 	mov	rcx, rax
@@ -1327,7 +1315,6 @@ $_159:
 	mov	edi, 1
 	lea	rbx, [rbp-0x104]
 	jmp	$_165
-
 $_160:	lea	rax, [Options+rip]
 	mov	rax, qword ptr [rax+rdi*8+0x10]
 	test	rax, rax
@@ -1347,13 +1334,12 @@ $_161:	mov	rdx, rsi
 	call	GetExtPart@PLT
 	mov	rbx, rax
 	mov	ecx, edi
-	call	$_149
+	call	GetExt
 	mov	rdx, rax
 	mov	rcx, rbx
 	call	tstrcpy@PLT
 	lea	rbx, [rbp-0x104]
 	jmp	$_164
-
 $_162:	mov	rdx, rax
 	mov	rcx, rbx
 	call	tstrcpy@PLT
@@ -1370,7 +1356,7 @@ $_163:	mov	rcx, rax
 	jnz	$_164
 	mov	rbx, rax
 	mov	ecx, edi
-	call	$_149
+	call	GetExt
 	mov	rdx, rax
 	mov	rcx, rbx
 	call	tstrcpy@PLT
@@ -1388,7 +1374,7 @@ $_165:	cmp	rdi, 4
 	pop	rsi
 	ret
 
-$_166:
+AssembleInit:
 	mov	qword ptr [rsp+0x8], rcx
 	push	rbp
 	mov	rbp, rsp
@@ -1397,20 +1383,20 @@ $_166:
 	mov	dword ptr [write_to_file+rip], 0
 	mov	qword ptr [LinnumQueue+rip], 0
 	mov	rcx, qword ptr [rbp+0x10]
-	call	$_159
+	call	SetFilenames
 	call	FastpassInit@PLT
-	call	$_130
-	call	$_127
+	call	open_files
+	call	ReswTableInit
 	call	SymInit@PLT
 	call	InputInit@PLT
-	call	$_124
+	call	ModuleInit
 	call	CondInit@PLT
 	call	ExprEvalInit@PLT
 	call	LstInit@PLT
 	leave
 	ret
 
-$_167:
+AssembleFini:
 	sub	rsp, 40
 	call	SegmentFini@PLT
 	call	ResWordsFini@PLT
@@ -1465,7 +1451,7 @@ $_170:	test	rax, rax
 	cmp	eax, 1
 	jnz	$_171
 	call	ClearSrcStack@PLT
-	call	$_167
+	call	AssembleFini
 	xor	eax, eax
 	mov	dword ptr [MacroLocals+rip], eax
 	lea	rdi, [ModuleInfo+rip]
@@ -1483,12 +1469,12 @@ $_172:	jmp	$_191
 $_173:	cmp	byte ptr [Options+0xD7+rip], 0
 	jz	$_174
 	mov	rcx, qword ptr [rbp+0x28]
-	call	$_136
+	call	iddc_file
 	mov	qword ptr [rbp+0x28], rax
 $_174:	mov	rcx, qword ptr [rbp+0x28]
-	call	$_166
+	call	AssembleInit
 	mov	dword ptr [Parse_Pass+rip], 0
-$_175:	call	$_106
+$_175:	call	OnePass
 	xor	eax, eax
 	cmp	dword ptr [ModuleInfo+rip], eax
 	ja	$_189
@@ -1563,9 +1549,9 @@ $_189:	cmp	dword ptr [Parse_Pass+rip], 0
 	jbe	$_190
 	cmp	dword ptr [write_to_file+rip], 0
 	jz	$_190
-	call	$_028
+	call	WriteModule
 $_190:	call	LstWriteCRef@PLT
-$_191:	call	$_167
+$_191:	call	AssembleFini
 	xor	eax, eax
 	cmp	eax, dword ptr [ModuleInfo+rip]
 	jnz	$_192

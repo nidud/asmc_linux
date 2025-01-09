@@ -218,7 +218,6 @@ $_023:	test	rax, rax
 
 $_024:	mov	rax, qword ptr [rax]
 	jmp	$_023
-
 $_025:
 	ret
 
@@ -244,7 +243,7 @@ my_fgetc:
 	pop	rsi
 	ret
 
-$_026:
+my_fgets:
 	mov	qword ptr [rsp+0x8], rcx
 	mov	qword ptr [rsp+0x18], r8
 	push	rsi
@@ -257,27 +256,19 @@ $_026:
 	mov	rcx, qword ptr [rbp+0x30]
 	call	my_fgetc
 	jmp	$_035
-
-$_027:	jmp	$_033
-
-$_028:	jmp	$_034
-
 $_029:	mov	byte ptr [rdi], 0
 	mov	rax, qword ptr [rbp+0x20]
 	jmp	$_036
-
 $_030:	xor	eax, eax
 	mov	byte ptr [rdi], al
 	cmp	rdi, qword ptr [rbp+0x20]
 	jbe	$_031
 	mov	rax, qword ptr [rbp+0x20]
 $_031:	jmp	$_036
-
 $_032:	stosb
 	jmp	$_034
-
 $_033:	cmp	eax, 13
-	jz	$_028
+	jz	$_034
 	cmp	eax, 10
 	jz	$_029
 	cmp	eax, 26
@@ -285,11 +276,10 @@ $_033:	cmp	eax, 13
 	cmp	eax, -1
 	jz	$_030
 	jmp	$_032
-
 $_034:	mov	rcx, qword ptr [rbp+0x30]
 	call	my_fgetc
 $_035:	cmp	rdi, rsi
-	jc	$_027
+	jc	$_033
 	mov	ecx, 2039
 	call	asmerr@PLT
 	mov	byte ptr [rdi-0x1], 0
@@ -305,13 +295,12 @@ $_037:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 32
-	cmp	qword ptr [SrcFree+rip], 0
-	jz	$_038
 	mov	rax, qword ptr [SrcFree+rip]
+	test	rax,rax
+	jz	$_038
 	mov	rcx, qword ptr [rax]
 	mov	qword ptr [SrcFree+rip], rcx
 	jmp	$_039
-
 $_038:	mov	ecx, 32
 	call	LclAlloc@PLT
 $_039:	mov	rcx, qword ptr [ModuleInfo+0xD8+rip]
@@ -359,38 +348,6 @@ set_curr_srcfile:
 SetLineNumber:
 	mov	rax, qword ptr [ModuleInfo+0xD8+rip]
 	mov	dword ptr [rax+0x18], ecx
-	ret
-
-	push	rbx
-	push	rbp
-	mov	rbp, rsp
-	sub	rsp, 40
-	mov	rbx, rcx
-	mov	rcx, qword ptr [ModuleInfo+0xD8+rip]
-$_044:	test	rcx, rcx
-	jz	$_047
-	cmp	word ptr [rcx+0x8], 0
-	jnz	$_046
-	movzx	eax, word ptr [rcx+0xA]
-	mov	rax, qword ptr [ModuleInfo+0xB0+rip]
-	mov	rax, qword ptr [rdx+rax*8]
-	lea	rdx, [DS0000+rip]
-	cmp	byte ptr [ModuleInfo+0x1E0+rip], 0
-	jnz	$_045
-	lea	rdx, [DS0001+rip]
-$_045:	mov	r9d, dword ptr [rcx+0x18]
-	mov	r8, rax
-	mov	rcx, rbx
-	call	tsprintf@PLT
-	jmp	$_048
-
-$_046:	mov	rcx, qword ptr [rcx]
-	jmp	$_044
-
-$_047:	xor	eax, eax
-	mov	byte ptr [rbx], al
-$_048:	leave
-	pop	rbx
 	ret
 
 print_source_nesting_structure:
@@ -476,8 +433,7 @@ $_056:	leave
 	pop	rsi
 	ret
 
-$_057:
-	mov	qword ptr [rsp+0x8], rcx
+open_file_in_include_path:
 	mov	qword ptr [rsp+0x10], rdx
 	push	rsi
 	push	rdi
@@ -485,16 +441,12 @@ $_057:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 56
-	mov	rcx, qword ptr [rbp+0x28]
-	jmp	$_059
-
-$_058:	add	rcx, 1
-$_059:	movzx	eax, byte ptr [rcx]
+	dec	rcx
+$_058:	inc	rcx
+	movzx	eax, byte ptr [rcx]
 	test	byte ptr [r15+rax], 0x08
 	jnz	$_058
-	xchg	rax, rcx
-	mov	qword ptr [rbp+0x28], rax
-	mov	rcx, rax
+	mov	qword ptr [rbp+0x28], rcx
 	call	tstrlen@PLT
 	mov	dword ptr [rbp-0xC], eax
 	xor	eax, eax
@@ -542,7 +494,6 @@ $_065:	mov	rcx, qword ptr [rbp+0x30]
 	call	fopen@PLT
 $_066:	mov	rbx, qword ptr [rbp-0x8]
 	jmp	$_060
-
 $_067:
 	leave
 	pop	rbx
@@ -582,7 +533,7 @@ $_068:	test	rbx, rbx
 	sub	rax, rsi
 	lea	rdi, [rbp-0x104]
 	mov	ecx, eax
-	rep movsb
+	rep	movsb
 	mov	rsi, qword ptr [rbp+0x28]
 $_069:	lodsb
 	stosb
@@ -617,7 +568,7 @@ $_072:
 	jnz	$_073
 	lea	rdx, [rbp-0x104]
 	mov	rcx, qword ptr [rbp+0x28]
-	call	$_057
+	call	open_file_in_include_path
 	test	rax, rax
 	jz	$_073
 	mov	qword ptr [rbp-0x110], rax
@@ -662,7 +613,7 @@ GetTextLine:
 	mov	r8, qword ptr [rbx+0x10]
 	mov	edx, dword ptr [ModuleInfo+0x174+rip]
 	mov	rcx, qword ptr [rbp+0x28]
-	call	$_026
+	call	my_fgets
 	test	rax, rax
 	jz	$_076
 	inc	dword ptr [rbx+0x18]
