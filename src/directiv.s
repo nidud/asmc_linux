@@ -773,7 +773,7 @@ directive_tab:
 	.quad  LdrDirective
 
 DS0000:
-	.byte  0x25, 0x73, 0x0A, 0x00
+	.asciz "%s\n"
 
 
 .att_syntax prefix

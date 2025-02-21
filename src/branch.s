@@ -764,7 +764,7 @@ $_121:	leave
 	.ALIGN	16
 
 DS0000:
-	.byte  0x73, 0x68, 0x6F, 0x72, 0x74, 0x00
+	.asciz "short"
 
 
 .att_syntax prefix

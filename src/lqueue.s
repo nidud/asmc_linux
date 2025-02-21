@@ -499,7 +499,7 @@ $_050:
 	.ALIGN	16
 
 DS0000:
-	.byte  0x28, 0x6E, 0x75, 0x6C, 0x6C, 0x29, 0x00
+	.asciz "(null)"
 
 
 .att_syntax prefix
