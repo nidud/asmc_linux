@@ -133,7 +133,7 @@ $_017:	leave
 	.ALIGN	16
 
 DS0000:
-	.byte  0x5F, 0x00
+	.asciz "_"
 
 
 .att_syntax prefix

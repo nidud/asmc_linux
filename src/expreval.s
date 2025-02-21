@@ -5079,7 +5079,7 @@ ExprEvalInit:
 	.ALIGN	16
 
 thissym:
-	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+	.zero  8
 
 nullstruct:
 	.quad  0x0000000000000000
@@ -5095,7 +5095,7 @@ DS0000:
 	.byte  0x00
 
 DS0001:
-	.byte  0x40, 0x40, 0x00
+	.asciz "@@"
 
 
 
