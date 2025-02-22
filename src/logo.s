@@ -77,7 +77,7 @@ cp_options:
 	.ascii "-eq Don't display error messages           -Fd[file] Write import definition file\n"
 	.ascii "-Fi<file> Force <file> to be included      -Fl[file] Generate listing\n"
 	.ascii "-Fo<file> Name object file                 -Fw<file> Set errors file name\n"
-	.ascii "-fpic, -fno-pic Position Independed Code   -frame Auto generate unwind information\n"
+	.ascii "-fpic, -fno-pic Position Independent Code  -frame Auto generate unwind information\n"
 	.ascii "-FPi Generate 80x87 emulator encoding      -FPi87 80x87 instructions (default)\n"
 	.ascii "-fpc Disallow floating-point instructions  -fp<n> Set FPU: 0=8087, 2=80287, 3=80387\n"
 	.ascii "-Ge force stack checking for all funcs     -G<cdzvs> Pascal, C, Std/Vector/Sys-call\n"
