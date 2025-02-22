@@ -750,13 +750,10 @@ $_120:	mov	rcx, qword ptr [rbp+0x30]
 	add	edx, dword ptr [rsi+0x8]
 $_121:	cmp	edx, 32768
 	jc	$_122
-	add	edx, 4
+	add	eax, 4
 $_122:	mov	ecx, dword ptr [rdi+0x10]
 	lea	rax, [rcx+rax+0x6]
 	and	eax, 0xFFFFFFFC
-	cmp	dword ptr [rdi+0x50], 32768
-	jc	$_123
-	add	eax, 4
 $_123:	add	dword ptr [rsi+0x4], eax
 	mov	rcx, qword ptr [rdi+0x20]
 	cmp	byte ptr [rdi+0x19], -60

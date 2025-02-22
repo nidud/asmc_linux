@@ -2225,7 +2225,7 @@ $_302:	mov	rdx, qword ptr [rbp-0x10]
 	mov	byte ptr [unw_segs_defined+rip], 3
 	jmp	$_304
 
-$_303:	movzx	eax, byte ptr [rbp-0x2C]
+$_303:	lea	rax, [rbp-0x2C]
 	mov	qword ptr [rbp-0x10], rax
 	mov	rcx, qword ptr [rdi+0x30]
 	call	GetSegIdx@PLT
