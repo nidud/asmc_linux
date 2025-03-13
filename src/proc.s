@@ -5547,7 +5547,7 @@ DS0025:
 	.asciz "%r %r, %u"
 
 DS0026:
-	.asciz "push %r\n"
+	.ascii "push %r\n"
 	.asciz "mov %r, %r"
 
 DS0027:

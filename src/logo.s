@@ -18,7 +18,7 @@ write_logo:
 	cmp	byte ptr [banner_printed+rip], 0
 	jnz	$_001
 	mov	byte ptr [banner_printed+rip], 1
-	mov	r9d, 11
+	mov	r9d, 24
 	mov	r8d, 36
 	mov	edx, 2
 	lea	rcx, [cp_logo+rip]
