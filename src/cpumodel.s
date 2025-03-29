@@ -548,11 +548,11 @@ sym_Cpu: .quad	0x0000000000000000
 
 coff64_fmtopt:
 	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	.byte  0x12, 0x0E,  'P',  'E',  '3',  '2',  '+', 0x00
+	.byte  0x12, 0x0E,  'P',  'E',	'3',  '2',  '+', 0x00
 
 elf64_fmtopt:
 	.byte  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	.byte  0x00, 0x0F,  'E',  'L',  'F',  '6',  '4', 0x00
+	.byte  0x00, 0x0F,  'E',  'L',	'F',  '6',  '4', 0x00
 
 ModelToken:
 	.quad  DS0000
@@ -640,10 +640,10 @@ DS0008:
 	.asciz "FARSTACK"
 
 DS0009:
-	.asciz "OS_OS2"
+	.asciz "OS_DOS"
 
 DS000A:
-	.asciz "OS_DOS"
+	.asciz "OS_OS2"
 
 
 .att_syntax prefix
